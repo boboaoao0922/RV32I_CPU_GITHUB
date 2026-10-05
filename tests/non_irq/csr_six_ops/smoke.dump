@@ -1,0 +1,76 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_csr_six_ops\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	0d828293          	addi	x5,x5,216 # d8 <unexpected_trap>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	0f000093          	addi	x1,x0,240
+  10:	00f00113          	addi	x2,x0,15
+  14:	00300193          	addi	x3,x0,3
+  18:	34309573          	csrrw	x10,mtval,x1
+  1c:	343125f3          	csrrs	x11,mtval,x2
+  20:	3431b673          	csrrc	x12,mtval,x3
+  24:	3432d6f3          	csrrwi	x13,mtval,5
+  28:	34316773          	csrrsi	x14,mtval,2
+  2c:	3430f7f3          	csrrci	x15,mtval,1
+  30:	34302873          	csrrs	x16,mtval,x0
+  34:	343028f3          	csrrs	x17,mtval,x0
+  38:	34303973          	csrrc	x18,mtval,x0
+  3c:	343069f3          	csrrsi	x19,mtval,0
+  40:	34307a73          	csrrci	x20,mtval,0
+  44:	34305af3          	csrrwi	x21,mtval,0
+  48:	34302b73          	csrrs	x22,mtval,x0
+  4c:	00000b93          	addi	x23,x0,0
+  50:	01750463          	beq	x10,x23,58 <_start+0x58>
+  54:	5ad0f06f          	jal	x0,fe00 <test_fail>
+  58:	0f000b93          	addi	x23,x0,240
+  5c:	01758463          	beq	x11,x23,64 <_start+0x64>
+  60:	5a10f06f          	jal	x0,fe00 <test_fail>
+  64:	0ff00b93          	addi	x23,x0,255
+  68:	01760463          	beq	x12,x23,70 <_start+0x70>
+  6c:	5950f06f          	jal	x0,fe00 <test_fail>
+  70:	0fc00b93          	addi	x23,x0,252
+  74:	01768463          	beq	x13,x23,7c <_start+0x7c>
+  78:	5890f06f          	jal	x0,fe00 <test_fail>
+  7c:	00500b93          	addi	x23,x0,5
+  80:	01770463          	beq	x14,x23,88 <_start+0x88>
+  84:	57d0f06f          	jal	x0,fe00 <test_fail>
+  88:	00700b93          	addi	x23,x0,7
+  8c:	01778463          	beq	x15,x23,94 <_start+0x94>
+  90:	5710f06f          	jal	x0,fe00 <test_fail>
+  94:	00600b93          	addi	x23,x0,6
+  98:	01780463          	beq	x16,x23,a0 <_start+0xa0>
+  9c:	5650f06f          	jal	x0,fe00 <test_fail>
+  a0:	01788463          	beq	x17,x23,a8 <_start+0xa8>
+  a4:	55d0f06f          	jal	x0,fe00 <test_fail>
+  a8:	01790463          	beq	x18,x23,b0 <_start+0xb0>
+  ac:	5550f06f          	jal	x0,fe00 <test_fail>
+  b0:	01798463          	beq	x19,x23,b8 <_start+0xb8>
+  b4:	54d0f06f          	jal	x0,fe00 <test_fail>
+  b8:	017a0463          	beq	x20,x23,c0 <_start+0xc0>
+  bc:	5450f06f          	jal	x0,fe00 <test_fail>
+  c0:	017a8463          	beq	x21,x23,c8 <_start+0xc8>
+  c4:	53d0f06f          	jal	x0,fe00 <test_fail>
+  c8:	00000b93          	addi	x23,x0,0
+  cc:	017b0463          	beq	x22,x23,d4 <_start+0xd4>
+  d0:	5310f06f          	jal	x0,fe00 <test_fail>
+  d4:	62d0f06f          	jal	x0,ff00 <test_pass>
+
+000000d8 <unexpected_trap>:
+  d8:	5290f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

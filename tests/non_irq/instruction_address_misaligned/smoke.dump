@@ -1,0 +1,108 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test5\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	04c28293          	addi	x5,x5,76 # 4c <trap_handler_jalr>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	30046073          	csrrsi	x0,mstatus,8
+  10:	00000513          	addi	x10,x0,0
+  14:	00000113          	addi	x2,x0,0
+  18:	000100b7          	lui	x1,0x10
+  1c:	00208093          	addi	x1,x1,2 # 10002 <test_pass+0x102>
+
+00000020 <Inst_misaliment_site_jalr>:
+  20:	00008067          	jalr	x0,0(x1)
+
+00000024 <after_mret_jalr_test>:
+  24:	00000297          	auipc	x5,0x0
+  28:	06828293          	addi	x5,x5,104 # 8c <trap_handler_jal>
+  2c:	30529073          	csrrw	x0,mtvec,x5
+
+00000030 <Inst_misaliment_site_jal>:
+  30:	0020006f          	jal	x0,32 <Inst_misaliment_site_jal+0x2>
+
+00000034 <after_mret_jal_test>:
+  34:	00000297          	auipc	x5,0x0
+  38:	09c28293          	addi	x5,x5,156 # d0 <trap_handler_branch>
+  3c:	30529073          	csrrw	x0,mtvec,x5
+
+00000040 <Inst_misaliment_site_branch>:
+  40:	00000163          	beq	x0,x0,42 <Inst_misaliment_site_branch+0x2>
+
+00000044 <after_mret_branch_test>:
+  44:	6bd0f06f          	jal	x0,ff00 <test_pass>
+
+00000048 <fail_trampoline>:
+  48:	5b90f06f          	jal	x0,fe00 <test_fail>
+
+0000004c <trap_handler_jalr>:
+  4c:	34202a73          	csrrs	x20,mcause,x0
+  50:	00000a93          	addi	x21,x0,0
+  54:	015a0463          	beq	x20,x21,5c <trap_handler_jalr+0x10>
+  58:	ff1ff06f          	jal	x0,48 <fail_trampoline>
+  5c:	34102b73          	csrrs	x22,mepc,x0
+  60:	00000b97          	auipc	x23,0x0
+  64:	fc0b8b93          	addi	x23,x23,-64 # 20 <Inst_misaliment_site_jalr>
+  68:	017b0463          	beq	x22,x23,70 <trap_handler_jalr+0x24>
+  6c:	fddff06f          	jal	x0,48 <fail_trampoline>
+  70:	34302c73          	csrrs	x24,mtval,x0
+  74:	001c0463          	beq	x24,x1,7c <trap_handler_jalr+0x30>
+  78:	fd1ff06f          	jal	x0,48 <fail_trampoline>
+  7c:	004b0293          	addi	x5,x22,4
+  80:	34129073          	csrrw	x0,mepc,x5
+  84:	00150513          	addi	x10,x10,1
+  88:	30200073          	mret
+
+0000008c <trap_handler_jal>:
+  8c:	34202a73          	csrrs	x20,mcause,x0
+  90:	00000a93          	addi	x21,x0,0
+  94:	015a0463          	beq	x20,x21,9c <trap_handler_jal+0x10>
+  98:	fb1ff06f          	jal	x0,48 <fail_trampoline>
+  9c:	34102b73          	csrrs	x22,mepc,x0
+  a0:	00000b97          	auipc	x23,0x0
+  a4:	f90b8b93          	addi	x23,x23,-112 # 30 <Inst_misaliment_site_jal>
+  a8:	017b0463          	beq	x22,x23,b0 <trap_handler_jal+0x24>
+  ac:	f9dff06f          	jal	x0,48 <fail_trampoline>
+  b0:	34302c73          	csrrs	x24,mtval,x0
+  b4:	03200313          	addi	x6,x0,50
+  b8:	006c0463          	beq	x24,x6,c0 <trap_handler_jal+0x34>
+  bc:	f8dff06f          	jal	x0,48 <fail_trampoline>
+  c0:	004b0293          	addi	x5,x22,4
+  c4:	34129073          	csrrw	x0,mepc,x5
+  c8:	00150513          	addi	x10,x10,1
+  cc:	30200073          	mret
+
+000000d0 <trap_handler_branch>:
+  d0:	34202a73          	csrrs	x20,mcause,x0
+  d4:	00000a93          	addi	x21,x0,0
+  d8:	015a0463          	beq	x20,x21,e0 <trap_handler_branch+0x10>
+  dc:	f6dff06f          	jal	x0,48 <fail_trampoline>
+  e0:	34102b73          	csrrs	x22,mepc,x0
+  e4:	00000b97          	auipc	x23,0x0
+  e8:	f5cb8b93          	addi	x23,x23,-164 # 40 <Inst_misaliment_site_branch>
+  ec:	017b0463          	beq	x22,x23,f4 <trap_handler_branch+0x24>
+  f0:	f59ff06f          	jal	x0,48 <fail_trampoline>
+  f4:	34302c73          	csrrs	x24,mtval,x0
+  f8:	04200313          	addi	x6,x0,66
+  fc:	006c0463          	beq	x24,x6,104 <trap_handler_branch+0x34>
+ 100:	f49ff06f          	jal	x0,48 <fail_trampoline>
+ 104:	004b0293          	addi	x5,x22,4
+ 108:	34129073          	csrrw	x0,mepc,x5
+ 10c:	00150513          	addi	x10,x10,1
+ 110:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

@@ -1,0 +1,58 @@
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+IMEM             0x00000000         0x00010000         xr
+DMEM             0x00010000         0x00010000         rw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+
+.text           0x00000000       0x9c
+ *(.text.start)
+ .text.start    0x00000000       0x40 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+                0x00000000                _start
+                0x00000024                irq_wait
+                0x0000002c                after_irq
+ *(.text)
+ .text          0x00000040        0x0 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+ *(.text.*)
+ .text.trap     0x00000040       0x5c C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+                0x00000040                trap_handler
+
+.test_fail      0x0000fe00        0x8
+ *(.test.fail)
+ .test.fail     0x0000fe00        0x8 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+
+.test_pass      0x0000ff00        0x8
+ *(.test.pass)
+ .test.pass     0x0000ff00        0x8 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+
+.rodata
+ *(.rodata)
+ *(.rodata.*)
+
+.data           0x00010000        0x0
+ *(.data)
+ .data          0x00010000        0x0 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+ *(.data.*)
+ *(.sdata)
+ *(.sdata.*)
+
+.bss            0x00010000        0x0
+ *(.bss)
+ .bss           0x00010000        0x0 C:\Users\user\AppData\Local\Temp\cc66ehdH.o
+ *(.bss.*)
+ *(.sbss)
+ *(.sbss.*)
+ *(COMMON)
+OUTPUT(D:\side_project\Integration\RV32I_SYSTEM_TOP\workloads\freeze_regression\irq_cases\irq_single_sync\irq_single_sync.elf elf32-littleriscv)
+
+.riscv.attributes
+                0x00000000       0x27
+ .riscv.attributes
+                0x00000000       0x27 C:\Users\user\AppData\Local\Temp\cc66ehdH.o

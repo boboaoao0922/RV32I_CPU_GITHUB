@@ -1,0 +1,53 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test1\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	02828293          	addi	x5,x5,40 # 28 <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00000513          	addi	x10,x0,0
+
+00000010 <ecall_site>:
+  10:	00000073          	ecall
+
+00000014 <after_ecall>:
+  14:	00150513          	addi	x10,x10,1
+  18:	00200593          	addi	x11,x0,2
+  1c:	00b51463          	bne	x10,x11,24 <fail_trampoline>
+  20:	6e10f06f          	jal	x0,ff00 <test_pass>
+
+00000024 <fail_trampoline>:
+  24:	5dd0f06f          	jal	x0,fe00 <test_fail>
+
+00000028 <trap_handler>:
+  28:	34202a73          	csrrs	x20,mcause,x0
+  2c:	00b00a93          	addi	x21,x0,11
+  30:	015a0463          	beq	x20,x21,38 <trap_handler+0x10>
+  34:	ff1ff06f          	jal	x0,24 <fail_trampoline>
+  38:	34102b73          	csrrs	x22,mepc,x0
+  3c:	00000b97          	auipc	x23,0x0
+  40:	fd4b8b93          	addi	x23,x23,-44 # 10 <ecall_site>
+  44:	017b0463          	beq	x22,x23,4c <trap_handler+0x24>
+  48:	fddff06f          	jal	x0,24 <fail_trampoline>
+  4c:	34302c73          	csrrs	x24,mtval,x0
+  50:	000c0463          	beq	x24,x0,58 <trap_handler+0x30>
+  54:	fd1ff06f          	jal	x0,24 <fail_trampoline>
+  58:	004b0b13          	addi	x22,x22,4
+  5c:	341b1073          	csrrw	x0,mepc,x22
+  60:	00150513          	addi	x10,x10,1
+  64:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

@@ -1,0 +1,69 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_int10\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	08428293          	addi	x5,x5,132 # 84 <unexpected_trap>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	343ad073          	csrrwi	x0,mtval,21
+  10:	000100b7          	lui	x1,0x10
+  14:	01500113          	addi	x2,x0,21
+  18:	00700193          	addi	x3,x0,7
+  1c:	34302573          	csrrs	x10,mtval,x0
+
+00000020 <exmem_rs1>:
+  20:	00150593          	addi	x11,x10,1
+  24:	34302673          	csrrs	x12,mtval,x0
+
+00000028 <exmem_rs2>:
+  28:	00c006b3          	add	x13,x0,x12
+  2c:	34302773          	csrrs	x14,mtval,x0
+  30:	00700793          	addi	x15,x0,7
+
+00000034 <memwb_rs1>:
+  34:	00070833          	add	x16,x14,x0
+  38:	343028f3          	csrrs	x17,mtval,x0
+  3c:	00900913          	addi	x18,x0,9
+
+00000040 <memwb_rs2>:
+  40:	011009b3          	add	x19,x0,x17
+  44:	34302a73          	csrrs	x20,mtval,x0
+
+00000048 <exmem_store>:
+  48:	0140a023          	sw	x20,0(x1) # 10000 <test_pass+0x100>
+  4c:	0000aa83          	lw	x21,0(x1)
+  50:	34302b73          	csrrs	x22,mtval,x0
+  54:	00100b93          	addi	x23,x0,1
+
+00000058 <memwb_store>:
+  58:	0160a223          	sw	x22,4(x1)
+  5c:	0040ac03          	lw	x24,4(x1)
+  60:	01600c93          	addi	x25,x0,22
+  64:	01959e63          	bne	x11,x25,80 <fail_trampoline>
+  68:	00269c63          	bne	x13,x2,80 <fail_trampoline>
+  6c:	00281a63          	bne	x16,x2,80 <fail_trampoline>
+  70:	00299863          	bne	x19,x2,80 <fail_trampoline>
+  74:	002a9663          	bne	x21,x2,80 <fail_trampoline>
+  78:	002c1463          	bne	x24,x2,80 <fail_trampoline>
+  7c:	6850f06f          	jal	x0,ff00 <test_pass>
+
+00000080 <fail_trampoline>:
+  80:	5810f06f          	jal	x0,fe00 <test_fail>
+
+00000084 <unexpected_trap>:
+  84:	57d0f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

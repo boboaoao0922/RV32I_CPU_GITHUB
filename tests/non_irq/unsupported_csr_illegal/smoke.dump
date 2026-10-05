@@ -1,0 +1,57 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_unsupported_csr_illegal\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	03c28293          	addi	x5,x5,60 # 3c <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00800393          	addi	x7,x0,8
+  10:	05a00413          	addi	x8,x0,90
+
+00000014 <bad_csr>:
+  14:	34039473          	csrrw	x8,mscratch,x7
+
+00000018 <after_bad>:
+  18:	05a00493          	addi	x9,x0,90
+  1c:	00940463          	beq	x8,x9,24 <after_bad+0xc>
+  20:	5e10f06f          	jal	x0,fe00 <test_fail>
+  24:	30002573          	csrrs	x10,mstatus,x0
+  28:	00857513          	andi	x10,x10,8
+  2c:	00050463          	beq	x10,x0,34 <after_bad+0x1c>
+  30:	5d10f06f          	jal	x0,fe00 <test_fail>
+  34:	00100593          	addi	x11,x0,1
+  38:	6c90f06f          	jal	x0,ff00 <test_pass>
+
+0000003c <trap_handler>:
+  3c:	34202a73          	csrrs	x20,mcause,x0
+  40:	00200a93          	addi	x21,x0,2
+  44:	035a1863          	bne	x20,x21,74 <trap_fail>
+  48:	34102b73          	csrrs	x22,mepc,x0
+  4c:	00000b97          	auipc	x23,0x0
+  50:	fc8b8b93          	addi	x23,x23,-56 # 14 <bad_csr>
+  54:	037b1063          	bne	x22,x23,74 <trap_fail>
+  58:	34302c73          	csrrs	x24,mtval,x0
+  5c:	34039cb7          	lui	x25,0x34039
+  60:	473c8c93          	addi	x25,x25,1139 # 34039473 <__stack_top+0x34019473>
+  64:	019c1863          	bne	x24,x25,74 <trap_fail>
+  68:	004b0b13          	addi	x22,x22,4
+  6c:	341b1073          	csrrw	x0,mepc,x22
+  70:	30200073          	mret
+
+00000074 <trap_fail>:
+  74:	58d0f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

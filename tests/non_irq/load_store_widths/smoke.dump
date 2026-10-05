@@ -1,0 +1,62 @@
+﻿
+D:\side_project\RISC-V\assembly\smoke_test7\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	000100b7          	lui	x1,0x10
+   4:	5678b137          	lui	x2,0x5678b
+   8:	bcd10113          	addi	x2,x2,-1075 # 5678abcd <__stack_top+0x5676abcd>
+   c:	0020a023          	sw	x2,0(x1) # 10000 <test_pass+0x100>
+  10:	0000a183          	lw	x3,0(x1)
+  14:	00009203          	lh	x4,0(x1)
+  18:	00209283          	lh	x5,2(x1)
+  1c:	00008303          	lb	x6,0(x1)
+  20:	00108383          	lb	x7,1(x1)
+  24:	00208403          	lb	x8,2(x1)
+  28:	00308483          	lb	x9,3(x1)
+  2c:	0000d503          	lhu	x10,0(x1)
+  30:	0020d583          	lhu	x11,2(x1)
+  34:	0000c603          	lbu	x12,0(x1)
+  38:	0010c683          	lbu	x13,1(x1)
+  3c:	0020c703          	lbu	x14,2(x1)
+  40:	0030c783          	lbu	x15,3(x1)
+  44:	0000a023          	sw	x0,0(x1)
+  48:	00209023          	sh	x2,0(x1)
+  4c:	0000a803          	lw	x16,0(x1)
+  50:	0000a023          	sw	x0,0(x1)
+  54:	00209123          	sh	x2,2(x1)
+  58:	0000a883          	lw	x17,0(x1)
+  5c:	0000a023          	sw	x0,0(x1)
+  60:	00208023          	sb	x2,0(x1)
+  64:	0000a903          	lw	x18,0(x1)
+  68:	0000a023          	sw	x0,0(x1)
+  6c:	002080a3          	sb	x2,1(x1)
+  70:	0000a983          	lw	x19,0(x1)
+  74:	0000a023          	sw	x0,0(x1)
+  78:	00208123          	sb	x2,2(x1)
+  7c:	0000aa03          	lw	x20,0(x1)
+  80:	0000a023          	sw	x0,0(x1)
+  84:	002081a3          	sb	x2,3(x1)
+  88:	0000aa83          	lw	x21,0(x1)
+  8c:	6750f06f          	jal	x0,ff00 <test_pass>
+  90:	5710f1ef          	jal	x3,fe00 <test_fail>
+
+00000094 <branch_taken>:
+  94:	66d0f0ef          	jal	x1,ff00 <test_pass>
+
+00000098 <fail_trampoline>:
+  98:	5690f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

@@ -1,0 +1,91 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test7\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	05828293          	addi	x5,x5,88 # 58 <trap_handler_lw_misalignment>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	30046073          	csrrsi	x0,mstatus,8
+  10:	000100b7          	lui	x1,0x10
+  14:	29a00113          	addi	x2,x0,666
+  18:	00000193          	addi	x3,x0,0
+  1c:	02900213          	addi	x4,x0,41
+  20:	0020a023          	sw	x2,0(x1) # 10000 <test_pass+0x100>
+  24:	0030a223          	sw	x3,4(x1)
+
+00000028 <lw_misalignment>:
+  28:	0010a183          	lw	x3,1(x1)
+
+0000002c <check_lw_result>:
+  2c:	02310463          	beq	x2,x3,54 <fail_trampoline>
+
+00000030 <modify_mtvec>:
+  30:	00000297          	auipc	x5,0x0
+  34:	06c28293          	addi	x5,x5,108 # 9c <trap_handler_sw_misalignment>
+  38:	30529073          	csrrw	x0,mtvec,x5
+
+0000003c <sw_misalignment>:
+  3c:	0040a123          	sw	x4,2(x1)
+
+00000040 <after_mret>:
+  40:	0000a203          	lw	x4,0(x1)
+  44:	00221863          	bne	x4,x2,54 <fail_trampoline>
+  48:	0040a203          	lw	x4,4(x1)
+  4c:	00321463          	bne	x4,x3,54 <fail_trampoline>
+  50:	6b10f06f          	jal	x0,ff00 <test_pass>
+
+00000054 <fail_trampoline>:
+  54:	5ad0f06f          	jal	x0,fe00 <test_fail>
+
+00000058 <trap_handler_lw_misalignment>:
+  58:	34202a73          	csrrs	x20,mcause,x0
+  5c:	00400a93          	addi	x21,x0,4
+  60:	015a0463          	beq	x20,x21,68 <trap_handler_lw_misalignment+0x10>
+  64:	ff1ff06f          	jal	x0,54 <fail_trampoline>
+  68:	34102b73          	csrrs	x22,mepc,x0
+  6c:	00000b97          	auipc	x23,0x0
+  70:	fbcb8b93          	addi	x23,x23,-68 # 28 <lw_misalignment>
+  74:	017b0463          	beq	x22,x23,7c <trap_handler_lw_misalignment+0x24>
+  78:	fddff06f          	jal	x0,54 <fail_trampoline>
+  7c:	34302c73          	csrrs	x24,mtval,x0
+  80:	00010cb7          	lui	x25,0x10
+  84:	001c8c93          	addi	x25,x25,1 # 10001 <test_pass+0x101>
+  88:	019c0463          	beq	x24,x25,90 <trap_handler_lw_misalignment+0x38>
+  8c:	fc9ff06f          	jal	x0,54 <fail_trampoline>
+  90:	004b0293          	addi	x5,x22,4
+  94:	34129073          	csrrw	x0,mepc,x5
+  98:	30200073          	mret
+
+0000009c <trap_handler_sw_misalignment>:
+  9c:	34202a73          	csrrs	x20,mcause,x0
+  a0:	00600a93          	addi	x21,x0,6
+  a4:	015a0463          	beq	x20,x21,ac <trap_handler_sw_misalignment+0x10>
+  a8:	fadff06f          	jal	x0,54 <fail_trampoline>
+  ac:	34102b73          	csrrs	x22,mepc,x0
+  b0:	00000b97          	auipc	x23,0x0
+  b4:	f8cb8b93          	addi	x23,x23,-116 # 3c <sw_misalignment>
+  b8:	017b0463          	beq	x22,x23,c0 <trap_handler_sw_misalignment+0x24>
+  bc:	f99ff06f          	jal	x0,54 <fail_trampoline>
+  c0:	34302c73          	csrrs	x24,mtval,x0
+  c4:	00010cb7          	lui	x25,0x10
+  c8:	002c8c93          	addi	x25,x25,2 # 10002 <test_pass+0x102>
+  cc:	019c0463          	beq	x24,x25,d4 <trap_handler_sw_misalignment+0x38>
+  d0:	f85ff06f          	jal	x0,54 <fail_trampoline>
+  d4:	004b0293          	addi	x5,x22,4
+  d8:	34129073          	csrrw	x0,mepc,x5
+  dc:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

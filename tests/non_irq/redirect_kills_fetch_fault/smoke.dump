@@ -1,0 +1,39 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_int02\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	02028293          	addi	x5,x5,32 # 20 <unexpected_trap>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00000093          	addi	x1,x0,0
+  10:	7ed0f06f          	jal	x0,fffc <edge_branch>
+
+00000014 <wrong_path>:
+  14:	5ed0f06f          	jal	x0,fe00 <test_fail>
+
+00000018 <good_target>:
+  18:	00108093          	addi	x1,x1,1
+  1c:	6e50f06f          	jal	x0,ff00 <test_pass>
+
+00000020 <unexpected_trap>:
+  20:	5e10f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>
+
+Disassembly of section .edge:
+
+0000fffc <edge_branch>:
+    fffc:	81cf006f          	jal	x0,18 <good_target>

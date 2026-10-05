@@ -1,0 +1,64 @@
+﻿
+D:\side_project\Integration\RV32I_SYSTEM_TOP\workloads\freeze_regression\irq_cases\irq_single_sync\irq_single_sync.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	04028293          	addi	x5,x5,64 # 40 <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00001337          	lui	x6,0x1
+  10:	80030313          	addi	x6,x6,-2048 # 800 <trap_handler+0x7c0>
+  14:	30431073          	csrrw	x0,mie,x6
+  18:	00000413          	addi	x8,x0,0
+  1c:	00000513          	addi	x10,x0,0
+  20:	30046073          	csrrsi	x0,mstatus,8
+
+00000024 <irq_wait>:
+  24:	00050513          	addi	x10,x10,0
+  28:	ffdff06f          	jal	x0,24 <irq_wait>
+
+0000002c <after_irq>:
+  2c:	05100493          	addi	x9,x0,81
+  30:	00100313          	addi	x6,x0,1
+  34:	00640463          	beq	x8,x6,3c <after_irq+0x10>
+  38:	5c90f06f          	jal	x0,fe00 <test_fail>
+  3c:	6c50f06f          	jal	x0,ff00 <test_pass>
+
+00000040 <trap_handler>:
+  40:	00140413          	addi	x8,x8,1
+  44:	00100313          	addi	x6,x0,1
+  48:	00640463          	beq	x8,x6,50 <trap_handler+0x10>
+  4c:	5b50f06f          	jal	x0,fe00 <test_fail>
+  50:	34202a73          	csrrs	x20,mcause,x0
+  54:	80000ab7          	lui	x21,0x80000
+  58:	00ba8a93          	addi	x21,x21,11 # 8000000b <test_pass+0x7fff010b>
+  5c:	015a0463          	beq	x20,x21,64 <trap_handler+0x24>
+  60:	5a10f06f          	jal	x0,fe00 <test_fail>
+  64:	34102b73          	csrrs	x22,mepc,x0
+  68:	00000b97          	auipc	x23,0x0
+  6c:	fbcb8b93          	addi	x23,x23,-68 # 24 <irq_wait>
+  70:	017b0863          	beq	x22,x23,80 <trap_handler+0x40>
+  74:	004b8b93          	addi	x23,x23,4
+  78:	017b0463          	beq	x22,x23,80 <trap_handler+0x40>
+  7c:	5850f06f          	jal	x0,fe00 <test_fail>
+  80:	34302c73          	csrrs	x24,mtval,x0
+  84:	000c0463          	beq	x24,x0,8c <trap_handler+0x4c>
+  88:	5790f06f          	jal	x0,fe00 <test_fail>
+  8c:	00000c97          	auipc	x25,0x0
+  90:	fa0c8c93          	addi	x25,x25,-96 # 2c <after_irq>
+  94:	341c9073          	csrrw	x0,mepc,x25
+  98:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

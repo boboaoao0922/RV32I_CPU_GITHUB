@@ -1,0 +1,72 @@
+﻿
+D:\side_project\Integration\RV32I_SYSTEM_TOP\workloads\dirty_eviction_cdc\dirty_eviction_cdc.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	0040006f          	jal	x0,4 <dirty_eviction_test>
+
+00000004 <dirty_eviction_test>:
+   4:	000102b7          	lui	x5,0x10
+   8:	00500313          	addi	x6,x0,5
+   c:	00100513          	addi	x10,x0,1
+
+00000010 <write_conflicting_lines>:
+  10:	00a2a023          	sw	x10,0(x5) # 10000 <test_pass+0x100>
+  14:	00150513          	addi	x10,x10,1
+  18:	00a2a223          	sw	x10,4(x5)
+  1c:	00150513          	addi	x10,x10,1
+  20:	00a2a423          	sw	x10,8(x5)
+  24:	00150513          	addi	x10,x10,1
+  28:	00a2a623          	sw	x10,12(x5)
+  2c:	00150513          	addi	x10,x10,1
+  30:	40028293          	addi	x5,x5,1024
+  34:	fff30313          	addi	x6,x6,-1
+  38:	fc031ce3          	bne	x6,x0,10 <write_conflicting_lines>
+  3c:	000102b7          	lui	x5,0x10
+  40:	00500313          	addi	x6,x0,5
+  44:	00100513          	addi	x10,x0,1
+  48:	00000613          	addi	x12,x0,0
+
+0000004c <read_and_check_lines>:
+  4c:	0002a583          	lw	x11,0(x5) # 10000 <test_pass+0x100>
+  50:	04a59c63          	bne	x11,x10,a8 <fail_near>
+  54:	00b60633          	add	x12,x12,x11
+  58:	00150513          	addi	x10,x10,1
+  5c:	0042a583          	lw	x11,4(x5)
+  60:	04a59463          	bne	x11,x10,a8 <fail_near>
+  64:	00b60633          	add	x12,x12,x11
+  68:	00150513          	addi	x10,x10,1
+  6c:	0082a583          	lw	x11,8(x5)
+  70:	02a59c63          	bne	x11,x10,a8 <fail_near>
+  74:	00b60633          	add	x12,x12,x11
+  78:	00150513          	addi	x10,x10,1
+  7c:	00c2a583          	lw	x11,12(x5)
+  80:	02a59463          	bne	x11,x10,a8 <fail_near>
+  84:	00b60633          	add	x12,x12,x11
+  88:	00150513          	addi	x10,x10,1
+  8c:	40028293          	addi	x5,x5,1024
+  90:	fff30313          	addi	x6,x6,-1
+  94:	fa031ce3          	bne	x6,x0,4c <read_and_check_lines>
+  98:	0d200693          	addi	x13,x0,210
+  9c:	00d61663          	bne	x12,x13,a8 <fail_near>
+
+000000a0 <perf_region_end>:
+  a0:	00000713          	addi	x14,x0,0
+  a4:	65d0f06f          	jal	x0,ff00 <test_pass>
+
+000000a8 <fail_near>:
+  a8:	5590f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

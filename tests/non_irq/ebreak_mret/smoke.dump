@@ -1,0 +1,68 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test2\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	04428293          	addi	x5,x5,68 # 44 <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	30046073          	csrrsi	x0,mstatus,8
+  10:	00000513          	addi	x10,x0,0
+
+00000014 <ebreak_site>:
+  14:	00100073          	ebreak
+
+00000018 <after_ecall>:
+  18:	00150513          	addi	x10,x10,1
+  1c:	00200593          	addi	x11,x0,2
+  20:	02b51063          	bne	x10,x11,40 <fail_trampoline>
+  24:	30002cf3          	csrrs	x25,mstatus,x0
+  28:	080cf093          	andi	x1,x25,128
+  2c:	008cf113          	andi	x2,x25,8
+  30:	08000193          	addi	x3,x0,128
+  34:	00309663          	bne	x1,x3,40 <fail_trampoline>
+  38:	00010463          	beq	x2,x0,40 <fail_trampoline>
+  3c:	6c50f06f          	jal	x0,ff00 <test_pass>
+
+00000040 <fail_trampoline>:
+  40:	5c10f06f          	jal	x0,fe00 <test_fail>
+
+00000044 <trap_handler>:
+  44:	34202a73          	csrrs	x20,mcause,x0
+  48:	00300a93          	addi	x21,x0,3
+  4c:	015a0463          	beq	x20,x21,54 <trap_handler+0x10>
+  50:	ff1ff06f          	jal	x0,40 <fail_trampoline>
+  54:	34102b73          	csrrs	x22,mepc,x0
+  58:	00000b97          	auipc	x23,0x0
+  5c:	fbcb8b93          	addi	x23,x23,-68 # 14 <ebreak_site>
+  60:	017b0463          	beq	x22,x23,68 <trap_handler+0x24>
+  64:	fddff06f          	jal	x0,40 <fail_trampoline>
+  68:	34302c73          	csrrs	x24,mtval,x0
+  6c:	000c0463          	beq	x24,x0,74 <trap_handler+0x30>
+  70:	fd1ff06f          	jal	x0,40 <fail_trampoline>
+  74:	30002cf3          	csrrs	x25,mstatus,x0
+  78:	080cf093          	andi	x1,x25,128
+  7c:	008cf113          	andi	x2,x25,8
+  80:	08000193          	addi	x3,x0,128
+  84:	00308463          	beq	x1,x3,8c <trap_handler+0x48>
+  88:	fb9ff06f          	jal	x0,40 <fail_trampoline>
+  8c:	00010463          	beq	x2,x0,94 <trap_handler+0x50>
+  90:	fb1ff06f          	jal	x0,40 <fail_trampoline>
+  94:	004b0b13          	addi	x22,x22,4
+  98:	341b1073          	csrrw	x0,mepc,x22
+  9c:	00150513          	addi	x10,x10,1
+  a0:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

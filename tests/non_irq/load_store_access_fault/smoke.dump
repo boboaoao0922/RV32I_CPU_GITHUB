@@ -1,0 +1,82 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test8\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	03c28293          	addi	x5,x5,60 # 3c <trap_handler_lw_acc_fault>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	30046073          	csrrsi	x0,mstatus,8
+  10:	00000093          	addi	x1,x0,0
+  14:	00000193          	addi	x3,x0,0
+  18:	00600113          	addi	x2,x0,6
+
+0000001c <lw_acc_fault>:
+  1c:	0040a183          	lw	x3,4(x1)
+
+00000020 <lw_acc_check>:
+  20:	00309c63          	bne	x1,x3,38 <fail_trampoline>
+
+00000024 <modify_mtvec>:
+  24:	00000297          	auipc	x5,0x0
+  28:	05828293          	addi	x5,x5,88 # 7c <trap_handler_sw_acc_fault>
+  2c:	30529073          	csrrw	x0,mtvec,x5
+
+00000030 <sw_acc_fault>:
+  30:	0020a423          	sw	x2,8(x1)
+
+00000034 <after_mret>:
+  34:	6cd0f06f          	jal	x0,ff00 <test_pass>
+
+00000038 <fail_trampoline>:
+  38:	5c90f06f          	jal	x0,fe00 <test_fail>
+
+0000003c <trap_handler_lw_acc_fault>:
+  3c:	34202a73          	csrrs	x20,mcause,x0
+  40:	00500a93          	addi	x21,x0,5
+  44:	015a0463          	beq	x20,x21,4c <trap_handler_lw_acc_fault+0x10>
+  48:	ff1ff06f          	jal	x0,38 <fail_trampoline>
+  4c:	34102b73          	csrrs	x22,mepc,x0
+  50:	00000b97          	auipc	x23,0x0
+  54:	fccb8b93          	addi	x23,x23,-52 # 1c <lw_acc_fault>
+  58:	017b0463          	beq	x22,x23,60 <trap_handler_lw_acc_fault+0x24>
+  5c:	fddff06f          	jal	x0,38 <fail_trampoline>
+  60:	34302c73          	csrrs	x24,mtval,x0
+  64:	00400c93          	addi	x25,x0,4
+  68:	019c0463          	beq	x24,x25,70 <trap_handler_lw_acc_fault+0x34>
+  6c:	fcdff06f          	jal	x0,38 <fail_trampoline>
+  70:	004b0293          	addi	x5,x22,4
+  74:	34129073          	csrrw	x0,mepc,x5
+  78:	30200073          	mret
+
+0000007c <trap_handler_sw_acc_fault>:
+  7c:	34202a73          	csrrs	x20,mcause,x0
+  80:	00700a93          	addi	x21,x0,7
+  84:	015a0463          	beq	x20,x21,8c <trap_handler_sw_acc_fault+0x10>
+  88:	fb1ff06f          	jal	x0,38 <fail_trampoline>
+  8c:	34102b73          	csrrs	x22,mepc,x0
+  90:	00000b97          	auipc	x23,0x0
+  94:	fa0b8b93          	addi	x23,x23,-96 # 30 <sw_acc_fault>
+  98:	017b0463          	beq	x22,x23,a0 <trap_handler_sw_acc_fault+0x24>
+  9c:	f9dff06f          	jal	x0,38 <fail_trampoline>
+  a0:	34302c73          	csrrs	x24,mtval,x0
+  a4:	00800c93          	addi	x25,x0,8
+  a8:	019c0463          	beq	x24,x25,b0 <trap_handler_sw_acc_fault+0x34>
+  ac:	f8dff06f          	jal	x0,38 <fail_trampoline>
+  b0:	004b0293          	addi	x5,x22,4
+  b4:	34129073          	csrrw	x0,mepc,x5
+  b8:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

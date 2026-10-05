@@ -1,0 +1,50 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_int09\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	04828293          	addi	x5,x5,72 # 48 <unexpected_trap>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00400513          	addi	x10,x0,4
+  10:	00d00593          	addi	x11,x0,13
+  14:	34125073          	csrrwi	x0,mepc,4
+
+00000018 <read_mepc_after_write>:
+  18:	34102373          	csrrs	x6,mepc,x0
+  1c:	3436d073          	csrrwi	x0,mtval,13
+
+00000020 <read_mtval_after_write>:
+  20:	343023f3          	csrrs	x7,mtval,x0
+
+00000024 <read_mtval_after_read>:
+  24:	34302473          	csrrs	x8,mtval,x0
+  28:	34145073          	csrrwi	x0,mepc,8
+
+0000002c <read_other_csr>:
+  2c:	343024f3          	csrrs	x9,mtval,x0
+  30:	00a31a63          	bne	x6,x10,44 <fail_trampoline>
+  34:	00b39863          	bne	x7,x11,44 <fail_trampoline>
+  38:	00b41663          	bne	x8,x11,44 <fail_trampoline>
+  3c:	00b49463          	bne	x9,x11,44 <fail_trampoline>
+  40:	6c10f06f          	jal	x0,ff00 <test_pass>
+
+00000044 <fail_trampoline>:
+  44:	5bd0f06f          	jal	x0,fe00 <test_fail>
+
+00000048 <unexpected_trap>:
+  48:	5b90f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

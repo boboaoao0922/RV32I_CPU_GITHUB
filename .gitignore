@@ -1,0 +1,13 @@
+# VCS and Verdi output
+out/
+simv*
+csrc/
+*.daidir/
+*.vdb/
+*.fsdb
+*.vcd
+*.vpd
+*.log
+ucli.key
+novas.*
+verdiLog/

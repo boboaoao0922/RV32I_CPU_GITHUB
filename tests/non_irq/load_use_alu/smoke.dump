@@ -1,0 +1,34 @@
+﻿
+D:\side_project\RISC-V\assembly\smoke_test5\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00010237          	lui	x4,0x10
+   4:	00500093          	addi	x1,x0,5
+   8:	00600113          	addi	x2,x0,6
+   c:	002081b3          	add	x3,x1,x2
+  10:	00322023          	sw	x3,0(x4) # 10000 <test_pass+0x100>
+  14:	00022283          	lw	x5,0(x4) # 0 <_start>
+  18:	40328333          	sub	x6,x5,x3
+  1c:	00600463          	beq	x0,x6,24 <branch_taken>
+  20:	0080006f          	jal	x0,28 <fail_trampoline>
+
+00000024 <branch_taken>:
+  24:	6dd0f06f          	jal	x0,ff00 <test_pass>
+
+00000028 <fail_trampoline>:
+  28:	5d90f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

@@ -1,0 +1,34 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_fence_nop\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	000100b7          	lui	x1,0x10
+   4:	15500113          	addi	x2,x0,341
+   8:	0020a023          	sw	x2,0(x1) # 10000 <test_pass+0x100>
+
+0000000c <fence_after_store>:
+   c:	0330000f          	fence	rw,rw
+  10:	0000a183          	lw	x3,0(x1)
+  14:	15500213          	addi	x4,x0,341
+  18:	00418463          	beq	x3,x4,20 <fence_after_load>
+  1c:	5e50f06f          	jal	x0,fe00 <test_fail>
+
+00000020 <fence_after_load>:
+  20:	0330000f          	fence	rw,rw
+  24:	00100513          	addi	x10,x0,1
+  28:	6d90f06f          	jal	x0,ff00 <test_pass>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

@@ -1,0 +1,85 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_test12\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	000100b7          	lui	x1,0x10
+   4:	00000117          	auipc	x2,0x0
+   8:	01810113          	addi	x2,x2,24 # 1c <test_load_branch_rs1>
+   c:	0020a023          	sw	x2,0(x1) # 10000 <test_pass+0x100>
+  10:	0000a183          	lw	x3,0(x1)
+  14:	00018267          	jalr	x4,0(x3)
+  18:	5e90f06f          	jal	x0,fe00 <test_fail>
+
+0000001c <test_load_branch_rs1>:
+  1c:	00400213          	addi	x4,x0,4
+  20:	00500293          	addi	x5,x0,5
+  24:	0040a023          	sw	x4,0(x1)
+  28:	0050a223          	sw	x5,4(x1)
+  2c:	0000a303          	lw	x6,0(x1)
+  30:	0040a383          	lw	x7,4(x1)
+  34:	00639463          	bne	x7,x6,3c <test_alu_store_addr>
+  38:	5c90f06f          	jal	x0,fe00 <test_fail>
+
+0000003c <test_alu_store_addr>:
+  3c:	00408193          	addi	x3,x1,4
+  40:	0041a023          	sw	x4,0(x3)
+  44:	0040006f          	jal	x0,48 <test_load_store_data>
+
+00000048 <test_load_store_data>:
+  48:	0001a283          	lw	x5,0(x3)
+  4c:	0051a223          	sw	x5,4(x3)
+  50:	0041a303          	lw	x6,4(x3)
+  54:	00430463          	beq	x6,x4,5c <test_load_store_addr>
+  58:	5a90f06f          	jal	x0,fe00 <test_fail>
+
+0000005c <test_load_store_addr>:
+  5c:	0010a023          	sw	x1,0(x1)
+  60:	0000a303          	lw	x6,0(x1)
+  64:	00432023          	sw	x4,0(x6)
+  68:	00032283          	lw	x5,0(x6)
+  6c:	00428463          	beq	x5,x4,74 <test_store_wrong_path>
+  70:	5910f06f          	jal	x0,fe00 <test_fail>
+
+00000074 <test_store_wrong_path>:
+  74:	00b00413          	addi	x8,x0,11
+  78:	00b00493          	addi	x9,x0,11
+  7c:	0000a023          	sw	x0,0(x1)
+  80:	0000a223          	sw	x0,4(x1)
+  84:	00428863          	beq	x5,x4,94 <test_store_wrong_path_conti>
+  88:	0080a023          	sw	x8,0(x1)
+  8c:	0090a223          	sw	x9,4(x1)
+  90:	5710f06f          	jal	x0,fe00 <test_fail>
+
+00000094 <test_store_wrong_path_conti>:
+  94:	0000a503          	lw	x10,0(x1)
+  98:	0040a583          	lw	x11,4(x1)
+  9c:	02850463          	beq	x10,x8,c4 <fail_trampoline>
+  a0:	02858263          	beq	x11,x8,c4 <fail_trampoline>
+  a4:	0040006f          	jal	x0,a8 <test_WB_ID_same_addr>
+
+000000a8 <test_WB_ID_same_addr>:
+  a8:	00100093          	addi	x1,x0,1
+  ac:	00000013          	addi	x0,x0,0
+  b0:	00000013          	addi	x0,x0,0
+  b4:	00108133          	add	x2,x1,x1
+  b8:	00200193          	addi	x3,x0,2
+  bc:	00311463          	bne	x2,x3,c4 <fail_trampoline>
+  c0:	6410f06f          	jal	x0,ff00 <test_pass>
+
+000000c4 <fail_trampoline>:
+  c4:	53d0f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

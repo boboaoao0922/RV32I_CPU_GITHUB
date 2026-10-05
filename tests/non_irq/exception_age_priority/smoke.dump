@@ -1,0 +1,113 @@
+﻿
+D:\side_project\RISC-V\assembly_v2\smoke_exc_test_int11\smoke.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	09028293          	addi	x5,x5,144 # 90 <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	000200b7          	lui	x1,0x20
+  10:	12300113          	addi	x2,x0,291
+  14:	00010237          	lui	x4,0x10
+  18:	00222023          	sw	x2,0(x4) # 10000 <test_pass+0x100>
+  1c:	03300193          	addi	x3,x0,51
+  20:	05500293          	addi	x5,x0,85
+  24:	06600313          	addi	x6,x0,102
+  28:	08800413          	addi	x8,x0,136
+  2c:	00200493          	addi	x9,x0,2
+  30:	00100f13          	addi	x30,x0,1
+
+00000034 <case1_fault>:
+  34:	0000a183          	lw	x3,0(x1) # 20000 <__stack_top>
+  38:	002220a3          	sw	x2,1(x4) # 1 <_start+0x1>
+  3c:	ffffffff          	.word	0xffffffff
+
+00000040 <after_case1>:
+  40:	00200f13          	addi	x30,x0,2
+
+00000044 <case2_fault>:
+  44:	0000a283          	lw	x5,0(x1)
+  48:	00122303          	lw	x6,1(x4) # 1 <_start+0x1>
+  4c:	00000073          	ecall
+
+00000050 <after_case2>:
+  50:	00300f13          	addi	x30,x0,3
+
+00000054 <case3_fault>:
+  54:	0000a403          	lw	x8,0(x1)
+  58:	00048067          	jalr	x0,0(x9)
+  5c:	00100073          	ebreak
+
+00000060 <after_case3>:
+  60:	00022383          	lw	x7,0(x4) # 0 <_start>
+  64:	03300513          	addi	x10,x0,51
+  68:	05500593          	addi	x11,x0,85
+  6c:	06600613          	addi	x12,x0,102
+  70:	08800693          	addi	x13,x0,136
+  74:	00a19c63          	bne	x3,x10,8c <fail_trampoline>
+  78:	00b29a63          	bne	x5,x11,8c <fail_trampoline>
+  7c:	00c31863          	bne	x6,x12,8c <fail_trampoline>
+  80:	00d41663          	bne	x8,x13,8c <fail_trampoline>
+  84:	00239463          	bne	x7,x2,8c <fail_trampoline>
+  88:	6790f06f          	jal	x0,ff00 <test_pass>
+
+0000008c <fail_trampoline>:
+  8c:	5750f06f          	jal	x0,fe00 <test_fail>
+
+00000090 <trap_handler>:
+  90:	34202a73          	csrrs	x20,mcause,x0
+  94:	00500a93          	addi	x21,x0,5
+  98:	075a1e63          	bne	x20,x21,114 <trap_fail>
+  9c:	34102b73          	csrrs	x22,mepc,x0
+  a0:	34302c73          	csrrs	x24,mtval,x0
+  a4:	061c1863          	bne	x24,x1,114 <trap_fail>
+  a8:	00100c93          	addi	x25,x0,1
+  ac:	039f0863          	beq	x30,x25,dc <handle_case1>
+  b0:	00200c93          	addi	x25,x0,2
+  b4:	059f0263          	beq	x30,x25,f8 <handle_case2>
+  b8:	00300c93          	addi	x25,x0,3
+  bc:	059f1c63          	bne	x30,x25,114 <trap_fail>
+
+000000c0 <handle_case3>:
+  c0:	00000d17          	auipc	x26,0x0
+  c4:	f94d0d13          	addi	x26,x26,-108 # 54 <case3_fault>
+  c8:	05ab1663          	bne	x22,x26,114 <trap_fail>
+  cc:	00000e97          	auipc	x29,0x0
+  d0:	f94e8e93          	addi	x29,x29,-108 # 60 <after_case3>
+  d4:	341e9073          	csrrw	x0,mepc,x29
+  d8:	30200073          	mret
+
+000000dc <handle_case1>:
+  dc:	00000d17          	auipc	x26,0x0
+  e0:	f58d0d13          	addi	x26,x26,-168 # 34 <case1_fault>
+  e4:	03ab1863          	bne	x22,x26,114 <trap_fail>
+  e8:	00000e97          	auipc	x29,0x0
+  ec:	f58e8e93          	addi	x29,x29,-168 # 40 <after_case1>
+  f0:	341e9073          	csrrw	x0,mepc,x29
+  f4:	30200073          	mret
+
+000000f8 <handle_case2>:
+  f8:	00000d17          	auipc	x26,0x0
+  fc:	f4cd0d13          	addi	x26,x26,-180 # 44 <case2_fault>
+ 100:	01ab1a63          	bne	x22,x26,114 <trap_fail>
+ 104:	00000e97          	auipc	x29,0x0
+ 108:	f4ce8e93          	addi	x29,x29,-180 # 50 <after_case2>
+ 10c:	341e9073          	csrrw	x0,mepc,x29
+ 110:	30200073          	mret
+
+00000114 <trap_fail>:
+ 114:	4ed0f06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>

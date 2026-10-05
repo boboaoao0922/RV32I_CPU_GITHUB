@@ -1,0 +1,84 @@
+﻿
+D:\side_project\Integration\RV32I_SYSTEM_TOP\workloads\freeze_regression\irq_cases\irq_level_retrigger\irq_level_retrigger.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000297          	auipc	x5,0x0
+   4:	04828293          	addi	x5,x5,72 # 48 <trap_handler>
+   8:	30529073          	csrrw	x0,mtvec,x5
+   c:	00001337          	lui	x6,0x1
+  10:	80030313          	addi	x6,x6,-2048 # 800 <second_return+0x754>
+  14:	30431073          	csrrw	x0,mie,x6
+  18:	00000413          	addi	x8,x0,0
+  1c:	00000513          	addi	x10,x0,0
+  20:	30046073          	csrrsi	x0,mstatus,8
+
+00000024 <irq_wait>:
+  24:	00050513          	addi	x10,x10,0
+  28:	ffdff06f          	jal	x0,24 <irq_wait>
+
+0000002c <retrigger_wait>:
+  2c:	00050513          	addi	x10,x10,0
+  30:	ffdff06f          	jal	x0,2c <retrigger_wait>
+
+00000034 <after_irq>:
+  34:	05300513          	addi	x10,x0,83
+  38:	00200313          	addi	x6,x0,2
+  3c:	00640463          	beq	x8,x6,44 <after_irq+0x10>
+  40:	5c10f06f          	jal	x0,fe00 <test_fail>
+  44:	6bd0f06f          	jal	x0,ff00 <test_pass>
+
+00000048 <trap_handler>:
+  48:	00140413          	addi	x8,x8,1
+  4c:	34202a73          	csrrs	x20,mcause,x0
+  50:	80000ab7          	lui	x21,0x80000
+  54:	00ba8a93          	addi	x21,x21,11 # 8000000b <test_pass+0x7fff010b>
+  58:	015a0463          	beq	x20,x21,60 <trap_handler+0x18>
+  5c:	5a50f06f          	jal	x0,fe00 <test_fail>
+  60:	34102b73          	csrrs	x22,mepc,x0
+  64:	34302c73          	csrrs	x24,mtval,x0
+  68:	000c0463          	beq	x24,x0,70 <trap_handler+0x28>
+  6c:	5950f06f          	jal	x0,fe00 <test_fail>
+  70:	00100493          	addi	x9,x0,1
+  74:	00940863          	beq	x8,x9,84 <first_return>
+  78:	00200493          	addi	x9,x0,2
+  7c:	02940863          	beq	x8,x9,ac <second_return>
+  80:	5810f06f          	jal	x0,fe00 <test_fail>
+
+00000084 <first_return>:
+  84:	00000b97          	auipc	x23,0x0
+  88:	fa0b8b93          	addi	x23,x23,-96 # 24 <irq_wait>
+  8c:	017b0863          	beq	x22,x23,9c <first_return+0x18>
+  90:	004b8b93          	addi	x23,x23,4
+  94:	017b0463          	beq	x22,x23,9c <first_return+0x18>
+  98:	5690f06f          	jal	x0,fe00 <test_fail>
+  9c:	00000c97          	auipc	x25,0x0
+  a0:	f90c8c93          	addi	x25,x25,-112 # 2c <retrigger_wait>
+  a4:	341c9073          	csrrw	x0,mepc,x25
+  a8:	30200073          	mret
+
+000000ac <second_return>:
+  ac:	00000b97          	auipc	x23,0x0
+  b0:	f80b8b93          	addi	x23,x23,-128 # 2c <retrigger_wait>
+  b4:	017b0863          	beq	x22,x23,c4 <second_return+0x18>
+  b8:	004b8b93          	addi	x23,x23,4
+  bc:	017b0463          	beq	x22,x23,c4 <second_return+0x18>
+  c0:	5410f06f          	jal	x0,fe00 <test_fail>
+  c4:	00000c97          	auipc	x25,0x0
+  c8:	f70c8c93          	addi	x25,x25,-144 # 34 <after_irq>
+  cc:	341c9073          	csrrw	x0,mepc,x25
+  d0:	30200073          	mret
+
+Disassembly of section .test_fail:
+
+0000fe00 <test_fail>:
+    fe00:	00000013          	addi	x0,x0,0
+    fe04:	ffdff06f          	jal	x0,fe00 <test_fail>
+
+Disassembly of section .test_pass:
+
+0000ff00 <test_pass>:
+    ff00:	00000013          	addi	x0,x0,0
+    ff04:	ffdff06f          	jal	x0,ff00 <test_pass>
