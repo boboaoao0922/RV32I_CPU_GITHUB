@@ -5,6 +5,8 @@
 
 ## 中文說明
 
+作者：Shih-Yi Chiu（邱仕逸）
+
 ### Introduction
 
 這是我在修習 ICLAB 與計算機結構後完成的 RISC-V CPU side project，主要目的是把 CPU pipeline、cache、AXI interconnect、CDC 與基本 ASIC flow 串成一個可以實際驗證的系統。
@@ -140,6 +142,8 @@ AI 也協助撰寫本 README 與 `docs/` 底下的文件。
 ---
 
 ## English
+
+Author: Shih-Yi Chiu
 
 ### Introduction
 
